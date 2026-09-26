@@ -3,329 +3,346 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Math Module 1 Review</title>
-  <style>
-    body {
-      font-family: "Comic Sans MS", "Comic Neue", Arial, sans-serif;
-      background: #f0f8ff;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-    }
-    header {
-      background: linear-gradient(90deg, #0074d9, #39c0ed);
-      color: white;
-      padding: 1.2rem;
-      text-align: center;
-      font-size: 1.6rem;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      position: relative;
-      z-index: 1;
-    }
-    .hidden { display: none; }
-    button {
-      background: #0074d9;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      margin: 8px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.2s;
-    }
-    button:hover { background: #005fa3; }
-    .feedback {
-      margin-top: 1rem;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-    .correct { color: #28a745; }
-    .incorrect { color: #dc3545; }
-    .score {
-      font-size: 1.3rem;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    .message {
-      font-size: 1.1rem;
-      margin-top: 0.5rem;
-      font-style: italic;
-    }
-    .progress {
-      font-size: 1rem;
-      margin-bottom: 0.3rem;
-      font-weight: bold;
-    }
-    .progress-bar-container {
-      background: #e0e0e0;
-      border-radius: 10px;
-      overflow: hidden;
-      height: 18px;
-      margin-bottom: 1rem;
-    }
-    .progress-bar {
-      background: linear-gradient(90deg, #39c0ed, #28a745);
-      height: 100%;
-      width: 0%;
-      transition: width 0.4s ease;
-    }
-    label { display: block; margin: 6px 0; cursor: pointer; }
-    .answer-btn.correct::after { content: " ✅"; color: #28a745; font-weight: bold; }
-    .answer-btn.incorrect::after { content: " ❌"; color: #dc3545; font-weight: bold; }
-    #confetti-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 999;
-    }
-  </style>
+  <title>Math Module 1 Review: Place Value &amp; Whole Numbers</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    📘 Math Module 1 Review
-  </header>
-  <canvas id="confetti-canvas"></canvas>
-  <div class="container">
-    <div id="start-screen">
-      <h2>Welcome! Pick a Test Form:</h2>
-      <button onclick="startTest('A')">Form A</button>
-      <button onclick="startTest('B')">Form B</button>
-    </div>
+<canvas id="confetti-canvas"></canvas>
 
-    <div id="quiz-screen" class="hidden">
-      <p class="progress" id="progress"></p>
-      <div class="progress-bar-container">
-        <div class="progress-bar" id="progress-bar"></div>
+<!-- ══════════════════════════════════════════
+     START SCREEN
+══════════════════════════════════════════ -->
+<div class="container">
+  <h1>🔢 Math Module 1 Review</h1>
+  <p class="welcome-sub">Place Value &amp; Whole-Number Operations</p>
+
+  <div id="start-screen">
+
+    <!-- WELCOME PANEL -->
+    <div id="welcome-panel" style="text-align:center;padding:10px 0 24px;">
+      <p style="font-size:1.05rem;color:#777;margin:0 auto 28px;max-width:400px;line-height:1.8;">
+        Practice place value, comparing, and rounding big numbers.<br>
+        You'll get instant feedback on every question!
+      </p>
+      <button class="lgs-btn" onclick="app.showReadAloudIntro()">🚀 Let's Get Started!</button>
+      <div style="text-align:right;margin-top:10px;">
+        <span onclick="app.promptTeacherReview()" style="font-size:0.72rem;color:#bbb;cursor:pointer;user-select:none;">Teacher Access</span>
       </div>
-      <h2 id="question-text"></h2>
-      <div id="answers"></div>
-      <div class="feedback" id="feedback"></div>
-      <button id="submit-btn" class="hidden" onclick="submitMulti()">Submit</button>
-      <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question ➡️</button>
     </div>
 
-    <div id="end-screen" class="hidden">
-      <h2>🎉 Test Complete!</h2>
-      <p class="score" id="final-score"></p>
-      <p class="score" id="percent-score"></p>
-      <p class="message" id="performance-message"></p>
-      <button onclick="restart()">🔄 Try Again</button>
+    <!-- STUDENT LOGIN (hidden until after directions) -->
+    <div id="student-login-panel" class="hidden">
+
+      <!-- RESUME CARD -->
+      <div id="resume-container" class="hidden">
+        <div style="background:#fff8f0;border:3px solid #e67e22;border-radius:16px;padding:24px 20px;text-align:center;margin-bottom:16px;">
+          <div style="font-size:2.5rem;margin-bottom:8px;">↩️</div>
+          <p style="margin:0 0 6px;font-weight:800;color:#a04000;font-size:1.1rem;">Welcome back!</p>
+          <p style="margin:0 0 16px;color:#555;font-size:0.9rem;">You have an unfinished session:</p>
+          <div id="resume-detail" style="font-size:1.4rem;font-weight:800;color:#e67e22;margin-bottom:20px;"></div>
+          <button class="resume-btn" onclick="app.resumeSession()" style="width:100%;font-size:1rem;padding:14px;">↩️ Resume Where I Left Off</button>
+          <div style="margin-top:14px;">
+            <button onclick="app.discardProgress()"
+              style="background:none;border:none;color:#c0392b;font-size:0.82rem;cursor:pointer;
+                     font-family:inherit;text-decoration:underline;padding:4px;">
+              🗑️ Discard &amp; start over (Teacher PIN required)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1 — SIGN IN -->
+      <div class="step-card" id="login-step-card">
+        <span class="step-label">Step 1 — Sign In</span>
+        <div class="login-box">
+          <label for="name-select">👤 Select your name:</label>
+          <select id="name-select" onchange="app.onNameSelect()">
+            <option value="">-- Choose your name --</option>
+          </select>
+
+          <div id="pin-section" class="hidden">
+            <label for="student-pin" id="pin-label">🔒 Enter your student number:</label>
+            <input type="password" id="student-pin" placeholder="Student number…"
+                   onkeydown="if(event.key==='Enter') app.attemptLogin()" autocomplete="new-password" />
+            <div id="guest-name-section" class="hidden">
+              <label for="guest-display-name">✏️ Enter your first name:</label>
+              <input type="text" id="guest-display-name" placeholder="e.g. Henry" maxlength="20"
+                     onkeydown="if(event.key==='Enter') app.attemptLogin()" />
+            </div>
+            <button class="sign-in-btn" onclick="app.attemptLogin()">✅ Sign In</button>
+          </div>
+
+          <div class="login-error" id="login-error"></div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — CHOOSE A FORM -->
+      <div id="form-select-section" class="hidden">
+        <div class="step-card">
+          <span class="step-label">Step 2 — Choose a Form</span>
+          <div class="start-grid">
+            <button class="start-btn" id="btn-form-A" onclick="app.attemptStart('A')">📝 Form A<span class="form-btn-sub">17 questions</span></button>
+            <button class="start-btn" id="btn-form-B" onclick="app.attemptStart('B')">📝 Form B<span class="form-btn-sub">17 questions</span></button>
+            <button class="start-btn" id="btn-form-C" onclick="app.attemptStart('C')">📝 Form C<span class="form-btn-sub">17 questions</span></button>
+          </div>
+        </div>
+        <div style="background:#f0f4ff;border:2px solid #a9c4f5;border-radius:12px;
+                     padding:12px 16px;margin-bottom:12px;font-size:0.88rem;color:#2c3e50;line-height:1.6;">
+          📋 <strong>Rules:</strong> You get <strong>2 attempts</strong> per form.
+          You must complete <strong>all 3 forms once</strong> before any form unlocks for a second attempt.
+          After 2 attempts a form is locked — your teacher can unlock it if needed.
+        </div>
+        <div style="text-align:center;margin-bottom:8px;">
+          <button class="score-btn" onclick="app.showScores()">📊 View Score History</button>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /#start-screen -->
+
+  <!-- ══════════════════════════════════════════
+       READ ALOUD INTRO SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="readaloud-screen" class="hidden">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:3.5rem;margin-bottom:10px;">🔊</div>
+      <h2 style="color:var(--primary);margin:0 0 8px;">Read Aloud is Available!</h2>
+      <p style="color:#555;font-size:0.95rem;line-height:1.6;max-width:420px;margin:0 auto;">
+        Every question and every answer choice has its own speaker button.<br>
+        You can use it as much as you need!
+      </p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;max-width:420px;margin:0 auto 24px;">
+      <div style="background:#eaf4ff;border:2px solid #b3d4f5;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+        <span style="font-size:2rem;">1️⃣</span>
+        <div><strong>Tap 🔊 once</strong> — the question or choice is read aloud</div>
+      </div>
+      <div style="background:#fff3e0;border:2px solid #ffd08a;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+        <span style="font-size:2rem;">2️⃣</span>
+        <div><strong>Tap ⏹ to stop</strong> — reading stops immediately</div>
+      </div>
+      <div style="background:#e8f5e9;border:2px solid #a5d6a7;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;">
+        <span style="font-size:2rem;">3️⃣</span>
+        <div><strong>Tap 🔊 again</strong> — it replays from the beginning</div>
+      </div>
+    </div>
+
+    <div style="background:#f3e8ff;border:2px solid #9b59b6;border-radius:10px;padding:8px 16px;
+                margin-bottom:14px;display:flex;align-items:center;gap:12px;
+                font-size:0.93rem;font-weight:bold;color:#6c3483;">
+      <span>📢 Please read this carefully — button unlocks in</span>
+      <div style="flex:1;height:8px;background:#e8d5f5;border-radius:4px;overflow:hidden;">
+        <div id="readaloud-fill" style="height:100%;background:#9b59b6;width:100%;border-radius:4px;transition:width 1s linear;"></div>
+      </div>
+      <span id="readaloud-count" style="min-width:28px;text-align:right;font-size:1rem;">6</span><span>s</span>
+    </div>
+    <button id="readaloud-btn" class="ready-btn" onclick="app.showDirections()" disabled style="opacity:0.45;cursor:not-allowed;">⏳ Please wait…</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       DIRECTIONS SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="directions-screen" class="hidden">
+    <h2 style="text-align:center;color:var(--primary);margin-top:0;margin-bottom:20px;">📋 How It Works</h2>
+
+    <div class="dir-section login-dir">
+      <div class="dir-row">
+        <button class="speak-btn" onclick="speakDir(this)">🔊</button>
+        <h3 style="margin:0;">👤 Step 1 — Sign In</h3>
+      </div>
+      <p class="dir-text">Choose your name from the list, then enter your student number and tap Sign In. Guest students will also enter their first name.</p>
+    </div>
+
+    <div class="dir-section form-dir">
+      <div class="dir-row">
+        <button class="speak-btn" onclick="speakDir(this)">🔊</button>
+        <h3 style="margin:0;">📝 Step 2 — Pick a Form</h3>
+      </div>
+      <p class="dir-text">Choose Form A, Form B, or Form C. Each form has 17 questions. Questions are shuffled every time so the order is different each attempt.</p>
+    </div>
+
+    <div class="dir-section attempts-dir">
+      <div class="dir-row">
+        <button class="speak-btn" onclick="speakDir(this)">🔊</button>
+        <h3 style="margin:0;">🔁 Step 3 — Attempts</h3>
+      </div>
+      <p class="dir-text">You get two attempts for each form. After your first try on all three forms, each form will unlock for one more attempt. After two attempts a form is locked — only your teacher can unlock it.</p>
+    </div>
+
+    <div class="dir-section read-dir">
+      <div class="dir-row">
+        <button class="speak-btn" onclick="speakDir(this)">🔊</button>
+        <h3 style="margin:0;">📖 Reading Timer</h3>
+      </div>
+      <p class="dir-text">When each question appears, the answer choices are locked for 12 seconds. Use that time to read the question and choices carefully before making your selection.</p>
+      <span class="timer-chip chip-amber">⏱️ 12 second read lock</span>
+    </div>
+
+    <div class="dir-section soak-dir">
+      <div class="dir-row">
+        <button class="speak-btn" onclick="speakDir(this)">🔊</button>
+        <h3 style="margin:0;">⏳ Thinking Timer</h3>
+      </div>
+      <p class="dir-text">After you confirm your answer, wait 8 seconds before moving on. This gives your brain time to process the feedback — right or wrong!</p>
+      <span class="timer-chip chip-teal">⏳ 8 second pause</span>
+    </div>
+
+    <div class="dir-section timer-dir">
+      <div class="dir-row">
+        <button class="speak-btn" onclick="speakDir(this)" style="border-color:#2ecc71;color:#2ecc71;">🔊</button>
+        <h3 style="margin:0;">⏱ Overall Timer</h3>
+      </div>
+      <p class="dir-text">A timer runs the whole time. It is not a countdown — there is no time limit. It only tracks how long you take so your teacher can see your progress.</p>
+      <span class="timer-chip chip-green">📊 No pressure — no time limit!</span>
+    </div>
+
+    <!-- 20s instruction lock bar -->
+    <div style="background:#f3e8ff;border:2px solid #9b59b6;border-radius:10px;padding:8px 16px;
+                margin-bottom:14px;display:flex;align-items:center;gap:12px;
+                font-size:0.93rem;font-weight:bold;color:#6c3483;">
+      <span>📜 Read all directions — button unlocks in</span>
+      <div style="flex:1;height:8px;background:#e8d5f5;border-radius:4px;overflow:hidden;">
+        <div id="instruct-fill" style="height:100%;background:#9b59b6;width:100%;border-radius:4px;transition:width 0.25s linear;"></div>
+      </div>
+      <span id="instruct-count" style="min-width:28px;text-align:right;font-size:1rem;">20</span><span>s</span>
+    </div>
+    <button id="ready-btn" class="ready-btn" onclick="app.showLogin()">⏳ Read the directions above first…</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       QUIZ SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="quiz-screen" class="hidden">
+    <div id="tab-warning-banner" class="hidden" style="background:#fde8f0;border:2px solid #f48fb1;border-radius:10px;padding:8px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;font-size:0.88rem;font-weight:bold;color:#ad1457;">
+      <span>⚠️ Please stay on this page during the review.</span>
+      <button onclick="document.getElementById('tab-warning-banner').classList.add('hidden')" style="background:none;border:none;cursor:pointer;color:#ad1457;font-size:1rem;padding:2px 6px;font-family:inherit;">✕</button>
+    </div>
+    <div id="review-mode-banner" class="hidden" style="background:#fff3cd;border:2px solid #ffc107;border-radius:10px;padding:7px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;font-weight:bold;color:#856404;">
+      <span>🔍 Teacher Review Mode — auto-run</span>
+      <button onclick="app.exitReviewMode()" style="background:none;border:1px solid #ffc107;border-radius:6px;padding:3px 10px;cursor:pointer;font-family:inherit;font-weight:bold;color:#856404;font-size:0.78rem;">✕ Exit</button>
+    </div>
+    <div class="q-badge">
+      <span class="q-badge-pill" id="progress-text">Question 1 of 17</span>
+      <span class="score-badge" id="score-text">Score: 0</span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="streak-bar" id="streak-bar"></div>
+
+    <div class="timer-row">
+      <div class="timer-display" id="timer-display">00:00</div>
+    </div>
+
+    <!-- Reading lock bar (12s) -->
+    <div class="reading-timer-bar hidden" id="reading-timer-bar">
+      <span>📖 Read carefully — answers unlock in</span>
+      <div class="reading-timer-fill-wrap"><div class="reading-timer-fill" id="reading-fill"></div></div>
+      <span class="reading-timer-count" id="reading-count">12</span><span>s</span>
+    </div>
+
+    <div class="question-header">
+      <button class="speak-btn" id="speak-q-btn" onclick="app.speakQuestion()" title="Read question aloud">🔊</button>
+      <h2 id="question-text"></h2>
+    </div>
+
+    <div class="options-grid" id="answers" role="radiogroup" aria-label="Answer choices"></div>
+
+    <!-- 8s next soak bar -->
+    <div class="next-timer-bar hidden" id="next-timer-bar">
+      <span>⏳ Next in</span>
+      <div class="next-timer-fill-wrap"><div class="next-timer-fill" id="next-fill"></div></div>
+      <span class="reading-timer-count" id="next-count">8</span><span>s</span>
+    </div>
+
+    <div id="feedback" class="feedback-box"></div>
+
+    <div class="controls">
+      <button id="confirm-btn" class="action-btn hidden" onclick="app.confirmAnswer()">✅ That's My Answer!</button>
+      <button id="next-btn"    class="action-btn hidden" onclick="app.nextQuestion()">Next ➡️</button>
     </div>
   </div>
 
-  <!-- Audio sounds -->
-  <audio id="ding-sound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-  <audio id="buzz-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-<script>
-const tests = {
-  A: [
-    {q:"How many times greater is the value of the digit 9 in 90,000 than the value of the digit 9 in 9,000?", options:["10","100","10,000","100,000"], answer:"10"},
-    {q:"What is 364,872 rounded to the nearest thousand?", options:["360,000","364,000","365,000","400,000"], answer:"365,000"},
-    {q:"What is 500,000 + 9,000 + 300 + 8 written in word form?", options:["five hundred nine thousand, three hundred eighty","five hundred nine thousand, three hundred eight","fifty-nine thousand, three hundred eighty","fifty-nine thousand, three hundred eight"], answer:"five hundred nine thousand, three hundred eight"},
-    {q:"In which number is the value of the digit 7 ten times the value of the digit 7 in 948,736?", options:["349,867","498,782","726,093","817,654"], answer:"817,654"},
-    {q:"Which number will make both comparisons true? 37,481 < ? < 38,697", options:["37,399","37,454","38,121","38,733"], answer:"38,121"},
-    {q:"A number rounded to the nearest hundred thousand is 600,000. The same number rounded to the nearest ten thousand is 650,000. Which of these could be the number?", options:["642,871","648,329","654,732","661,428"], answer:"648,329"},
-    {q:"Select all the correct ways to regroup and rename the number 720,000.", options:["720 tens","7,200 hundreds","720 thousands","72 ten thousands","72 hundred thousands"], answer:["7,200 hundreds","720 thousands","72 ten thousands"], multi:true},
-    {q:"True or False: 9,426 < 9,237", options:["True","False"], answer:"False"},
-    {q:"True or False: 8,000 + 90 = 8,000 + 9", options:["True","False"], answer:"False"},
-    {q:"True or False: four hundred seventy-eight > four hundred fifty-nine", options:["True","False"], answer:"True"},
-    {q:"What is 36,142 rounded to the nearest thousand?", options:["36,000","37,000","36,100","36,200"], answer:"36,000"},
-    {q:"Regroup and rename: 25,000 = ? hundreds", options:["25","250","2,500","2500"], answer:"250"},
-    {q:"What is 400,000 + 20,000 + 80 + 5 in standard form?", options:["420,805","420,085","400,285","420,580"], answer:"420,085"},
-    {q:"Max rolls four number cubes (3, 5, 1, 4). What is the GREATEST possible 4-digit number?", options:["5431","5314","5430","5413"], answer:"5431"},
-    {q:"Max rolls four number cubes (3, 5, 1, 4). What is the LEAST possible 4-digit number?", options:["1345","1354","1435","1543"], answer:"1345"},
-    {q:"For the number 2,488, how many times greater is the value of the digit 8 in the tens place than the digit 8 in the ones place?", options:["1","5","10","100"], answer:"10"},
-    {q:"A baseball team sold tickets: June 234,887; July 229,531; August 256,832. Order from GREATEST to LEAST.", options:["256,832, 234,887, 229,531","234,887, 229,531, 256,832","229,531, 234,887, 256,832","256,832, 229,531, 234,887"], answer:"256,832, 234,887, 229,531"},
-    {q:"Compare June (234,887) and August (256,832).", options:["<",">","="], answer:"<"}
-  ],
-  B: [
-    {q:"How many times greater is the value of the digit 2 in 20,000 than the value of the digit 2 in 2,000?", options:["1","10","100","1,000"], answer:"10"},
-    {q:"What is 21,842 rounded to the nearest hundred?", options:["21,800","21,840","21,900","22,000"], answer:"21,800"},
-    {q:"What is 90,000 + 2,000 + 500 + 60 written in word form?", options:["nine hundred two thousand, five hundred sixty","ninety-two thousand, five hundred sixty","nine hundred two thousand, fifty-six","ninety-two thousand, fifty-six"], answer:"ninety-two thousand, five hundred sixty"},
-    {q:"In which number is the value of the digit 6 ten times the value of the digit 6 in 251,687?", options:["164,834","429,615","786,129","812,567"], answer:"786,129"},
-    {q:"Which number will make both comparisons true? 42,572 < ? < 43,895", options:["42,567","42,981","43,914","44,632"], answer:"42,981"},
-    {q:"A number rounded to the nearest hundred thousand is 800,000. The same number rounded to the nearest ten thousand is 850,000. Which of these could be the number?", options:["834,659","849,135","852,563","873,142"], answer:"849,135"},
-    {q:"Select all the correct ways to regroup and rename the number 340,000.", options:["34,000 tens","3,400 hundreds","3,400 thousands","34,000 hundreds","34 ten thousands"], answer:["3,400 hundreds","34 ten thousands"], multi:true},
-    {q:"True or False: 2,090 = 2,900", options:["True","False"], answer:"False"},
-    {q:"True or False: 3,000 + 600 + 2 < 3,000 + 700 + 3", options:["True","False"], answer:"True"},
-    {q:"True or False: six thousand, fifty-one > six thousand, fifteen", options:["True","False"], answer:"True"},
-    {q:"What is 204,875 rounded to the nearest hundred?", options:["204,800","204,840","204,900","205,000"], answer:"204,900"},
-    {q:"Regroup and rename: 3,700 = ? tens", options:["37","370","3,700","3700"], answer:"370"},
-    {q:"What is 200,000 + 9,000 + 600 + 40 + 8 in standard form?", options:["209,068","209,486","209,648","200,968"], answer:"209,648"},
-    {q:"Emily used the digits 6, 3, and 7 to make the GREATEST number possible. What number did she make?", options:["763","736","673","637"], answer:"763"},
-    {q:"Jayson used the digits 6, 3, and 7 to make the LEAST number possible. What number did he make?", options:["637","367","736","673"], answer:"367"},
-    {q:"For the number 5,512, how many times greater is the value of the digit 5 in the thousands place than in the hundreds place?", options:["5","10","100","1,000"], answer:"10"},
-    {q:"Water park tickets: June 193,148; July 174,453; August 147,056. Order from LEAST to GREATEST.", options:["147,056, 174,453, 193,148","193,148, 174,453, 147,056","174,453, 147,056, 193,148","147,056, 193,148, 174,453"], answer:"147,056, 174,453, 193,148"},
-    {q:"Compare June (193,148) and August (147,056).", options:["<",">","="], answer:">"}
-  ]
-};
-let currentTest = [];
-let currentIndex = 0;
-let score = 0;
+  <!-- ══════════════════════════════════════════
+       END SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="end-screen" class="hidden">
+    <h2 style="text-align:center;">🎉 Review Complete!</h2>
+    <p id="final-score-sub" style="text-align:center;color:#666;margin-bottom:0;"></p>
+    <span id="final-percent"></span>
+    <p id="final-msg" style="font-size:1.3rem;text-align:center;"></p>
+    <div id="missed-section" class="missed-list hidden">
+      <h3>📋 Questions to Review:</h3>
+      <div id="missed-items"></div>
+    </div>
+    <div class="end-btns">
+      <button class="start-btn" onclick="app.tryAgain()">🔄 Try Again</button>
+      <button class="start-btn" style="background:#27ae60;box-shadow:0 5px 0 #1e8449;" onclick="app.restart()">🏠 Home</button>
+    </div>
+    <div id="review-next-btn" class="hidden" style="text-align:center;margin-top:12px;">
+      <button class="start-btn" style="background:#8e44ad;box-shadow:0 5px 0 #6c3483;" onclick="app._showReviewPicker()">🔍 Review Another Form</button>
+      <button onclick="app.exitReviewMode()" style="display:block;margin:10px auto 0;background:none;border:none;color:#999;font-size:0.8rem;cursor:pointer;font-family:inherit;text-decoration:underline;">Exit Review Mode</button>
+    </div>
+  </div>
 
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
+  <!-- ══════════════════════════════════════════
+       SCOREBOARD SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="scoreboard-screen" class="hidden">
+    <h2 style="color:var(--primary);text-align:center;">📊 Score History</h2>
+    <div id="sb-lock-bar" class="hidden" style="background:#f3e8ff;border:2px solid #9b59b6;border-radius:10px;padding:8px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;font-size:0.88rem;font-weight:bold;color:#6c3483;">
+      <span>📖 Take a moment to review your scores — buttons unlock in</span>
+      <div style="flex:1;height:8px;background:#e8d5f5;border-radius:4px;overflow:hidden;">
+        <div id="sb-lock-fill" style="height:100%;background:#9b59b6;width:100%;border-radius:4px;transition:width 0.25s linear;"></div>
+      </div>
+      <span id="sb-lock-count" style="min-width:28px;text-align:right;">60</span><span>s</span>
+    </div>
+    <p id="no-scores-msg" style="text-align:center;color:#999;display:none;">No scores yet — complete a form to record your first score!</p>
+    <div id="score-list"></div>
+    <div id="clear-confirm-panel" class="hidden"
+         style="background:#fff3cd;border:2px solid #ffc107;border-radius:12px;padding:16px 20px;margin:14px 0;">
+      <p style="margin:0 0 10px;font-weight:bold;color:#856404;">🔒 Enter Teacher PIN to clear all scores:</p>
+      <input type="password" id="clear-pin-input" placeholder="PIN…" maxlength="10" autocomplete="off"
+             onkeydown="if(event.key==='Enter') app.confirmClearScores()"
+             style="padding:9px 12px;border-radius:8px;border:2px solid #ccc;font-size:1rem;font-family:inherit;margin-bottom:8px;width:100%;"/>
+      <div id="clear-pin-error" style="color:#c0392b;font-weight:bold;min-height:18px;margin-bottom:8px;font-size:0.9rem;"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="action-btn" style="background:#27ae60;box-shadow:0 4px 0 #1e8449;" onclick="app.confirmClearScores()">✅ Confirm</button>
+        <button class="action-btn" style="background:#7f8c8d;box-shadow:0 4px 0 #566573;" onclick="app.cancelClearScores()">✕ Cancel</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px;">
+      <button class="action-btn" style="background:#7f8c8d;box-shadow:0 4px 0 #566573;" onclick="app.restart()">🏠 Home</button>
+    </div>
+    <div id="teacher-score-btns" style="display:none;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px;">
+      <button class="action-btn" style="background:#c0392b;box-shadow:0 4px 0 #922b21;" onclick="app.clearScores()">🗑️ Clear History</button>
+      <button class="action-btn" style="background:#27ae60;box-shadow:0 4px 0 #1e8449;" onclick="app.printResults()">🖨️ Print Report</button>
+    </div>
+  </div>
 
-function playSound(type) {
-  if (type === "correct") {
-    document.getElementById("ding-sound").play();
-  } else {
-    document.getElementById("buzz-sound").play();
-  }
-}
+  <!-- GLOBAL PIN MODAL -->
+  <div id="pin-modal" class="hidden">
+    <div class="pin-modal-inner">
+      <h3 id="pin-modal-title" style="color:var(--primary);margin:0 0 10px;text-align:center;"></h3>
+      <p  id="pin-modal-msg"   style="text-align:center;color:#555;margin-bottom:14px;font-size:0.95rem;line-height:1.5;"></p>
+      <input type="password" id="pin-modal-input" placeholder="Teacher PIN…" maxlength="10" autocomplete="off"
+             onkeydown="if(event.key==='Enter') app.confirmPinModal()"
+             style="width:100%;padding:11px 14px;border-radius:10px;border:2px solid #ccc;
+                    font-size:1.05rem;font-family:inherit;margin-bottom:8px;" />
+      <div id="pin-modal-error"
+           style="color:#c0392b;font-weight:bold;min-height:20px;margin-bottom:10px;font-size:0.9rem;text-align:center;"></div>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button class="action-btn" style="background:#27ae60;box-shadow:0 4px 0 #1e8449;" onclick="app.confirmPinModal()">✅ Confirm</button>
+        <button class="action-btn" style="background:#7f8c8d;box-shadow:0 4px 0 #566573;" onclick="app.cancelPinModal()">✕ Cancel</button>
+      </div>
+    </div>
+  </div>
 
-function startTest(form) {
-  currentTest = JSON.parse(JSON.stringify(tests[form]));
-  currentTest = shuffle(currentTest);
-  currentTest.forEach(q => {
-    q.options = shuffle(q.options);
-  });
-  currentIndex = 0;
-  score = 0;
-  document.getElementById("start-screen").classList.add("hidden");
-  document.getElementById("quiz-screen").classList.remove("hidden");
-  showQuestion();
-}
+</div><!-- /.container -->
 
-function showQuestion() {
-  const qObj = currentTest[currentIndex];
-  document.getElementById("progress").innerText = `Question ${currentIndex + 1} of ${currentTest.length}`;
-  const percent = ((currentIndex) / currentTest.length) * 100;
-  document.getElementById("progress-bar").style.width = percent + "%";
-
-  document.getElementById("question-text").innerText = qObj.q;
-  const answersDiv = document.getElementById("answers");
-  answersDiv.innerHTML = "";
-
-  if (qObj.multi) {
-    qObj.options.forEach(opt => {
-      const label = document.createElement("label");
-      const box = document.createElement("input");
-      box.type = "checkbox";
-      box.value = opt;
-      label.appendChild(box);
-      label.appendChild(document.createTextNode(" " + opt));
-      answersDiv.appendChild(label);
-    });
-    document.getElementById("submit-btn").classList.remove("hidden");
-    document.getElementById("next-btn").classList.add("hidden");
-  } else {
-    qObj.options.forEach(opt => {
-      const btn = document.createElement("button");
-      btn.innerText = opt;
-      btn.className = "answer-btn";
-      btn.onclick = () => checkAnswer(opt, qObj.answer, btn);
-      answersDiv.appendChild(btn);
-    });
-    document.getElementById("submit-btn").classList.add("hidden");
-  }
-  document.getElementById("feedback").innerText = "";
-}
-
-function checkAnswer(selected, correct, btn) {
-  if (selected === correct) {
-    document.getElementById("feedback").innerText = "✅ Correct!";
-    document.getElementById("feedback").className = "feedback correct";
-    btn.classList.add("correct");
-    score++;
-    playSound("correct");
-  } else {
-    document.getElementById("feedback").innerText = "❌ Incorrect. Correct answer: " + correct;
-    document.getElementById("feedback").className = "feedback incorrect";
-    btn.classList.add("incorrect");
-    playSound("incorrect");
-  }
-  Array.from(document.getElementById("answers").children).forEach(b => b.disabled = true);
-  document.getElementById("next-btn").classList.remove("hidden");
-}
-
-function submitMulti() {
-  const qObj = currentTest[currentIndex];
-  const checkboxes = document.querySelectorAll("#answers input[type=checkbox]");
-  let selected = [];
-  checkboxes.forEach(cb => { if (cb.checked) selected.push(cb.value); });
-  const correctSet = new Set(qObj.answer);
-  const selectedSet = new Set(selected);
-
-  if (selectedSet.size === correctSet.size && [...selectedSet].every(x => correctSet.has(x))) {
-    document.getElementById("feedback").innerText = "✅ Correct!";
-    document.getElementById("feedback").className = "feedback correct";
-    score++;
-    playSound("correct");
-  } else {
-    document.getElementById("feedback").innerText = "❌ Incorrect. Correct answers: " + qObj.answer.join(", ");
-    document.getElementById("feedback").className = "feedback incorrect";
-    playSound("incorrect");
-  }
-  checkboxes.forEach(cb => cb.disabled = true);
-  document.getElementById("submit-btn").classList.add("hidden");
-  document.getElementById("next-btn").classList.remove("hidden");
-}
-
-function nextQuestion() {
-  currentIndex++;
-  if (currentIndex < currentTest.length) {
-    showQuestion();
-  } else {
-    endTest();
-  }
-}
-
-function endTest() {
-  document.getElementById("quiz-screen").classList.add("hidden");
-  document.getElementById("end-screen").classList.remove("hidden");
-  const percent = Math.round((score / currentTest.length) * 100);
-  document.getElementById("progress-bar").style.width = "100%";
-  document.getElementById("final-score").innerText = `You scored ${score} out of ${currentTest.length}.`;
-  document.getElementById("percent-score").innerText = `That’s ${percent}%.`;
-
-  let message = "";
-  if (percent === 100) {
-    message = "🌟 Excellent work! Perfect score!";
-  } else if (percent >= 80) {
-    message = "👍 Great job! You really know this material.";
-  } else if (percent >= 60) {
-    message = "👌 Not bad! Keep practicing to improve.";
-  } else {
-    message = "💡 Keep trying! Review the lessons and practice again.";
-  }
-  document.getElementById("performance-message").innerText = message;
-
-  launchConfetti();
-}
-
-// 🎉 Confetti effect
-function launchConfetti() {
-  const duration = 3 * 1000;
-  const end = Date.now() + duration;
-
-  (function frame() {
-    confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 } });
-    confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 } });
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
-    }
-  })();
-}
-
-function restart() {
-  document.getElementById("end-screen").classList.add("hidden");
-  document.getElementById("start-screen").classList.remove("hidden");
-  document.getElementById("progress-bar").style.width = "0%";
-}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="data/form_a.js"></script>
+<script src="data/form_b.js"></script>
+<script src="data/form_c.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
