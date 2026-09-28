@@ -9,6 +9,7 @@
 ═══════════════════════════════════════════════════════ */
 
 /* ── CONFIG ─────────────────────────────────────────── */
+const REVIEW_OPEN   = false;   // false = students locked out; only Teacher Access works. Set true to open.
 const INSTRUCT_SECS = 20;
 const READ_SECS     = 12;
 const NEXT_SECS     = 8;
@@ -394,6 +395,7 @@ const app = {
 
   /* ── READ ALOUD INTRO ── */
   showReadAloudIntro() {
+    if (!REVIEW_OPEN) return;
     document.getElementById('welcome-panel').classList.add('hidden');
     this.show('readaloud-screen');
     const btn   = document.getElementById('readaloud-btn');
@@ -1440,3 +1442,17 @@ function stopConfetti() {
 
 /* ── BOOT ────────────────────────────────────────────── */
 app.init();
+
+/* ── CLOSED-TO-STUDENTS LOCK ────────────────────────── */
+(function applyReviewLock() {
+  if (REVIEW_OPEN) return;
+  const btn = document.querySelector('.lgs-btn');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.classList.add('locked');
+  btn.textContent = '🔒 Not Open Yet';
+  const note = document.createElement('p');
+  note.className = 'locked-note';
+  note.textContent = "Mr. O will let you know when this review is ready!";
+  btn.insertAdjacentElement('afterend', note);
+})();

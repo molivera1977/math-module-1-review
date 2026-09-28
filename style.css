@@ -612,3 +612,8 @@ button.answer-btn.incorrect { background: #f8d7da; border-color: #dc3545; color:
   button.answer-btn { font-size: 0.95rem; padding: 11px 12px; }
   #final-percent { font-size: 3.5rem; }
 }
+
+/* ── CLOSED-TO-STUDENTS LOCK ── */
+.lgs-btn.locked,
+.lgs-btn.locked:hover { background: #b8b8b8; box-shadow: 0 5px 0 #8f8f8f; cursor: not-allowed; transform: none; filter: grayscale(1); }
+.locked-note { color: #888; font-size: 0.95rem; margin: 14px 0 0; }
