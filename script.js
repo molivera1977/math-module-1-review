@@ -47,6 +47,9 @@ function submitScorePartial() {
       elapsed:        app.timerSeconds,
       tabSwitches:    tabSwitchCount,
       wrongQuestions: (app.missedQuestions||[]).map(m=>`[${m.id}] ${m.q}`).join(' | '),
+      startedAt:      app.startedAt || '',
+      finishedAt:     app.finishedAt || '',
+      events:         JSON.stringify(app.events || []),
       timestamp:      new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
     })
   }).catch(() => {});
@@ -73,6 +76,9 @@ function submitScoreFinal() {
       elapsed:        app.timerSeconds,
       tabSwitches:    tabSwitchCount,
       wrongQuestions: (app.missedQuestions||[]).map(m=>`[${m.id}] ${m.q}`).join(' | '),
+      startedAt:      app.startedAt || '',
+      finishedAt:     app.finishedAt || '',
+      events:         JSON.stringify(app.events || []),
       timestamp:      new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
     })
   }).catch(() => {});
@@ -356,6 +362,21 @@ function wrapWords(html) {
 /* ══════════════════════════════════════════════════════
    APP OBJECT
 ══════════════════════════════════════════════════════ */
+/* ── SESSION EVENT LOG ───────────────────────────────
+   start · leave · return · resume · close · finish, each with the
+   on-task clock. elapsed is time ON TASK: the timer pauses while the
+   page is hidden and counts ticks, so a slept device cannot inflate it. */
+function logEvent(kind, extra) {
+  if (!app.events) app.events = [];
+  app.events.push(Object.assign({
+    at: new Date().toISOString(),
+    e:  kind,
+    q:  (app.currentIndex || 0) + 1,
+    on: app.timerSeconds || 0
+  }, extra || {}));
+  if (app.events.length > 200) app.events.splice(0, app.events.length - 200);
+}
+
 const app = {
 
   /* ── state ── */
@@ -570,6 +591,8 @@ const app = {
 
   /* ── START SESSION ── */
   startSession(form) {
+    this.events = []; this.startedAt = new Date().toISOString();
+    this.finishedAt = '';
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(MOD1_SESSION_ID_KEY);
     tabSwitchCount     = 0;
@@ -601,6 +624,7 @@ const app = {
     }
 
     this.show('quiz-screen');
+    logEvent('start');
     this.startTimer();
     this.renderQuestion();
   },
@@ -638,6 +662,9 @@ const app = {
     this.streak         = saved.streak || 0;
     this.missedQuestions = saved.missedQuestions || [];
     this.timerSeconds   = saved.timerSeconds || 0;
+    this.events = saved.events || [];
+    this.startedAt = saved.startedAt || new Date().toISOString();
+    logEvent('resume');
     this.show('quiz-screen');
     this.startTimer();
     this.renderQuestion();
@@ -652,7 +679,9 @@ const app = {
       score:           this.score,
       streak:          this.streak,
       missedQuestions: this.missedQuestions,
-      timerSeconds:    this.timerSeconds
+      timerSeconds:    this.timerSeconds,
+      events: this.events,
+      startedAt: this.startedAt
     }));
   },
 
@@ -1011,6 +1040,7 @@ const app = {
 
   /* ── FINISH SESSION ── */
   _finishSession() {
+    this.finishedAt = new Date().toISOString(); logEvent('finish');
     this.stopTimerEngine();
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(MOD1_SESSION_ID_KEY);
@@ -1359,6 +1389,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     if (!app.timerOn) return;
     tabSwitchCount++;
+    logEvent('leave');
     app.stopTimerEngine();
     app.saveProgress();
     if (app.instructInterval) { clearInterval(app.instructInterval); }
@@ -1367,6 +1398,7 @@ document.addEventListener('visibilitychange', () => {
   } else {
     if (!app._wasTimerRunning) return;
     app._wasTimerRunning = false;
+    logEvent('return');
     const warnBanner = document.getElementById('tab-warning-banner');
     if (warnBanner) warnBanner.classList.remove('hidden');
     app.stopTimerEngine();
@@ -1380,6 +1412,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 window.addEventListener('beforeunload', () => {
+  if (app.timerOn) logEvent('close');
   if (app.timerOn) app.saveProgress();
 });
 
