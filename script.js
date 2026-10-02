@@ -27,6 +27,17 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzv8CWv1yyi8NeH04now9
 
 let tabSwitchCount = 0;
 
+/* One saved miss: "[ID] (Skill) question (picked: answer)" — the standard every
+   review uses. Skill comes from data/skills.js by question id, so misses restored
+   from an older saved attempt still get tagged. " | " separates entries, so it is
+   swapped out of the pick just in case. */
+function missEntry(m) {
+  const skill  = m.skill || (window.SKILLS || {})[m.id] || 'Unsorted';
+  const picked = m.yourAnswer == null || m.yourAnswer === '' ? '' :
+    ` (picked: ${String(m.yourAnswer).replace(/\s*\|\s*/g, ' / ').replace(/\s+/g, ' ').trim()})`;
+  return `[${m.id}] (${skill}) ${m.q}${picked}`;
+}
+
 function submitScorePartial() {
   const pct = app.currentBank.length
     ? Math.round((app.score / app.currentBank.length) * 100) : 0;
@@ -46,7 +57,7 @@ function submitScorePartial() {
       done:           false,
       elapsed:        app.timerSeconds,
       tabSwitches:    tabSwitchCount,
-      wrongQuestions: (app.missedQuestions||[]).map(m=>`[${m.id}] ${m.q}`).join(' | '),
+      wrongQuestions: (app.missedQuestions||[]).map(missEntry).join(' | '),
       startedAt:      app.startedAt || '',
       finishedAt:     app.finishedAt || '',
       events:         JSON.stringify(app.events || []),
@@ -75,7 +86,7 @@ function submitScoreFinal() {
       done:           true,
       elapsed:        app.timerSeconds,
       tabSwitches:    tabSwitchCount,
-      wrongQuestions: (app.missedQuestions||[]).map(m=>`[${m.id}] ${m.q}`).join(' | '),
+      wrongQuestions: (app.missedQuestions||[]).map(missEntry).join(' | '),
       startedAt:      app.startedAt || '',
       finishedAt:     app.finishedAt || '',
       events:         JSON.stringify(app.events || []),
@@ -971,7 +982,7 @@ const app = {
       this.streak++;
     } else {
       this.streak = 0;
-      this.missedQuestions.push({ id: q.id, q: q.q, yourAnswer: this.selectedAnswer, correct: q.answer, explanation: q.explanation || '' });
+      this.missedQuestions.push({ id: q.id, q: q.q, skill: (window.SKILLS || {})[q.id], yourAnswer: this.selectedAnswer, correct: q.answer, explanation: q.explanation || '' });
     }
 
     document.querySelectorAll('.answer-btn').forEach(btn => {
